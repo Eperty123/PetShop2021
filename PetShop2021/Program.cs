@@ -12,8 +12,11 @@ namespace PetShop2021
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddScoped<IPetRepository, PetRepository>();
+            serviceCollection.AddScoped<IPetTypeRepository, PetTypeRepository>();
             serviceCollection.AddScoped<IPetService, PetService>();
+            serviceCollection.AddScoped<IPetTypeService, PetTypeService>();
             serviceCollection.AddScoped<IPrinter, Printer>();
+            serviceCollection.AddScoped<FakeDB, FakeDB>();
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var printer = serviceProvider.GetRequiredService<IPrinter>();

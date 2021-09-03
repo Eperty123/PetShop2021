@@ -2,41 +2,88 @@
 using PetShop.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PetShop.Infrastructure.Data
 {
     public class PetTypeRepository : IPetTypeRepository
     {
+        #region Variables
+
+        readonly FakeDB FakeDB;
+
+        #endregion
+
+        #region Constructors
+        public PetTypeRepository(FakeDB fakeDB)
+        {
+            FakeDB = fakeDB;
+            InitData();
+        }
+
+        #endregion
+
+
         #region Methods
+
+        /// <summary>
+        /// Add test data.
+        /// </summary>
+        void InitData()
+        {
+
+            #region Pet type test data
+
+            var testPets = new List<IPetType>()
+            {
+                CreatePetType("Cat"),
+                CreatePetType("Dog"),
+                CreatePetType("Goat"),
+            };
+
+            AddPetTypes(testPets);
+
+            #endregion
+
+        }
+
+        public void AddPetTypes(params IPetType[] pets)
+        {
+            for (int i = 0; i < pets.Length; i++)
+                AddPetType(pets[i]);
+        }
+
+        public void AddPetTypes(IEnumerable<IPetType> pets)
+        {
+            var _pets = new List<IPetType>(pets);
+            for (int i = 0; i < _pets.Count; i++)
+                AddPetType(_pets[i]);
+        }
 
         public IPetType AddPetType(IPetType petType)
         {
-            throw new NotImplementedException();
+            FakeDB.AddPetType(petType);
+            return petType;
         }
 
-        public IPetType CreatePetType(string name)
+        public IPetType CreatePetType(string type)
         {
-            throw new NotImplementedException();
-        }
-
-        public IPetType CreatePetType(IPetType petType)
-        {
-            throw new NotImplementedException();
+            return new PetType(type);
         }
 
         public bool DeletePetType(IPetType petType)
         {
-            throw new NotImplementedException();
+            return FakeDB.DeletePetType(petType);
         }
 
-        public IEnumerable<IPetType> GetPetTypes()
+        public List<PetType> ReadPetTypes()
         {
-            throw new NotImplementedException();
+            return FakeDB.GetPetTypes().OfType<PetType>().ToList();
         }
 
         public IPetType GetPetType(int id)
         {
-            throw new NotImplementedException();
+            return FakeDB.GetPetType(id);
         }
 
         public IPetType GetPetType(IPetType petType)

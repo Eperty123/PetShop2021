@@ -7,8 +7,8 @@ namespace PetShop.Infrastructure.Data
     public class FakeDB
     {
         #region Variables
-        static List<IPet> Pets = new List<IPet>();
-        static List<IPetType> PetTypes = new List<IPetType>();
+        static List<Pet> Pets = new List<Pet>();
+        static List<PetType> PetTypes = new List<PetType>();
 
         static int Id;
         #endregion
@@ -20,18 +20,18 @@ namespace PetShop.Infrastructure.Data
         {
             Id = Pets.Count + 1;
             pet.SetId(Id);
-            Pets.Add(pet);
+            Pets.Add((Pet)pet);
             return pet;
         }
 
         public IPet GetPet(int id)
         {
-            return GetPets().ToList().Find(x => x.GetId().Equals(id));
+            return GetPets().Find(x => x.GetId().Equals(id));
         }
 
         public IPet GetPet(IPet pet)
         {
-            return GetPets().ToList().Find(x => x.GetId().Equals(pet.GetId()));
+            return GetPets().Find(x => x.GetId().Equals(pet.GetId()));
         }
 
         public IPet UpdatePet(IPet pet)
@@ -53,10 +53,10 @@ namespace PetShop.Infrastructure.Data
 
         public bool DeletePet(IPet pet)
         {
-            return Pets.Remove(pet);
+            return Pets.Remove((Pet)pet);
         }
 
-        public IEnumerable<IPet> GetPets()
+        public List<Pet> GetPets()
         {
             return Pets;
         }
@@ -68,13 +68,18 @@ namespace PetShop.Infrastructure.Data
         public IPetType AddPetType(IPetType petType)
         {
             petType.SetId(PetTypes.Count + 1);
-            PetTypes.Add(petType);
+            PetTypes.Add((PetType)petType);
             return petType;
         }
 
         public IPetType GetPetType(IPetType petType)
         {
-            return GetPetTypes().ToList().Find(x => x.GetId().Equals(petType.GetId()));
+            return GetPetType(petType.GetId());
+        }
+
+        public IPetType GetPetType(int id)
+        {
+            return GetPetTypes().ToList().Find(x => x.GetId().Equals(id));
         }
 
         public IPetType UpdatePetType(IPetType petType)
@@ -87,7 +92,7 @@ namespace PetShop.Infrastructure.Data
 
         public bool DeletePetType(IPetType petType)
         {
-            return PetTypes.Remove(petType);
+            return PetTypes.Remove((PetType)petType);
         }
 
         public IEnumerable<IPetType> GetPetTypes()

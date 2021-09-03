@@ -1,9 +1,7 @@
 ﻿using PetShop.Core.IServices;
 using PetShop.Core.Models;
 using PetShop.Domain.IRepositories;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PetShop.Domain.Services
 {
@@ -39,13 +37,19 @@ namespace PetShop.Domain.Services
             return _PetTypeRepository.DeletePetType(petType);
         }
 
-        public List<IPetType> GetPetTypes()
+        public List<PetType> GetPetTypes()
         {
-            return _PetTypeRepository.GetPetTypes().ToList();
+            return _PetTypeRepository.ReadPetTypes();
         }
+
         public IPetType GetPetType(int id)
         {
             return _PetTypeRepository.GetPetType(id);
+        }
+
+        public IPetType GetPetType(string typeName)
+        {
+            return GetPetTypes().Find(x => x.GetName().ToLower().Equals(typeName.ToLower()));
         }
 
         public IPetType GetPetType(IPetType petType)

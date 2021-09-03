@@ -17,7 +17,7 @@ namespace PetShop.Domain.Services
 
         #endregion
 
-        #region Initialization
+        #region Constructors
 
         public PetService() { }
 
@@ -25,6 +25,7 @@ namespace PetShop.Domain.Services
         {
             _PetRepository = petRepository;
         }
+
         #endregion
 
         #region Methods
@@ -55,9 +56,9 @@ namespace PetShop.Domain.Services
             return _PetRepository.DeletePet(pet);
         }
 
-        public List<IPet> GetPets()
+        public List<Pet> GetPets()
         {
-            return _PetRepository.GetPets().ToList();
+            return _PetRepository.ReadPets();
         }
 
         public IPet GetPet(int id)

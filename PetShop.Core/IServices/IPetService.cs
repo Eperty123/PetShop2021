@@ -16,6 +16,6 @@ namespace PetShop.Core.IServices
         IPet UpdatePet(IPet pet);
         bool DeletePet(IPet pet);
 
-        List<IPet> GetPets();
+        List<Pet> GetPets();
     }
 }

@@ -7,12 +7,12 @@ namespace PetShop.Domain.IRepositories
     {
         // TODO: IPetType CRUD.
         IPetType AddPetType(IPetType petType);
-        IPetType CreatePetType(string name);
+        IPetType CreatePetType(string type);
         IPetType GetPetType(int id);
         IPetType GetPetType(IPetType petType);
         IPetType UpdatePetType(IPetType petType);
         bool DeletePetType(IPetType petType);
 
-        IEnumerable<IPetType> GetPetTypes();
+        List<PetType> ReadPetTypes();
     }
 }

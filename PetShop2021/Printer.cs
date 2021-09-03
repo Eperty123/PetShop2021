@@ -12,6 +12,7 @@ namespace PetShop2021
         #region Variables
 
         readonly IPetService _PetService;
+        readonly IPetTypeService _PetTypeService;
         List<string> _MenuOptions;
 
         #endregion
@@ -21,6 +22,12 @@ namespace PetShop2021
         public Printer(IPetService petService)
         {
             _PetService = petService;
+        }
+
+        public Printer(IPetService petService, IPetTypeService petTypeService)
+        {
+            _PetService = petService;
+            _PetTypeService = petTypeService;
         }
 
         #endregion
@@ -93,6 +100,12 @@ namespace PetShop2021
             return result;
         }
 
+        #endregion
+
+        #region UI Methods
+
+        #region Pet
+
         /// <summary>
         /// Get an <see cref="IPet"/> by an id.
         /// </summary>
@@ -101,23 +114,6 @@ namespace PetShop2021
         IPet GetPetById(int id)
         {
             return _PetService.GetPet(id);
-        }
-
-        #endregion
-
-        #region UI Methods
-
-        /// <summary>
-        /// Add test data.
-        /// </summary>
-        void InitData()
-        {
-            var newPet1 = _PetService.CreatePet("Miku", "Dog", "Red", 100);
-            var newPet2 = _PetService.CreatePet("Haru", "Cat", "Black", 150);
-            var newPet3 = _PetService.CreatePet("Tatsuya", "Dog", "Blue", 200);
-            var newPet4 = _PetService.CreatePet("Eleina", "Fish", "Cyan", 350);
-
-            _PetService.AddPets(newPet1, newPet2, newPet3, newPet4);
         }
 
         /// <summary>
@@ -158,18 +154,91 @@ namespace PetShop2021
             else Tell("There are no pets in the store! Gotta catch 'em all, sir!");
         }
 
+        void ListPetsAndSortByPrice()
+        {
+            var pets = _PetService.GetPets().OrderBy(x => x.GetPrice()).ToList();
+            if (pets != null && pets.Count > 0)
+            {
+                Tell("");
+                Tell($"Showing {pets.Count} {(pets.Count > 1 ? "pets" : "pet")} sorted by price (low to high):");
+                for (int i = 0; i < pets.Count; i++)
+                {
+                    var pet = pets[i];
+                    PrintInfoForPet(pet);
+                }
+            }
+            else Tell("There are no pets in the store! Gotta catch 'em all, sir!");
+        }
+
+        void ListFiveCheapestPets()
+        {
+            var pets = _PetService.GetPets().OrderBy(x => x.GetPrice()).Take(5).ToList();
+            if (pets != null && pets.Count > 0)
+            {
+                Tell("");
+                Tell($"Showing {pets.Count} cheapest {(pets.Count > 1 ? "pets" : "pet")} sorted by price (low to high):");
+                for (int i = 0; i < pets.Count; i++)
+                {
+                    var pet = pets[i];
+                    PrintInfoForPet(pet);
+                }
+            }
+            else Tell("There are no pets in the store! Gotta catch 'em all, sir!");
+        }
+
+        #endregion
+
+        #region Pet Type
+
+        /// <summary>
+        /// Get an <see cref="IPetType"/> by an id.
+        /// </summary>
+        /// <param name="id">The id of the pet type.</param>
+        /// <returns></returns>
+        IPetType GetPetTypeById(int id)
+        {
+            return _PetTypeService.GetPetType(id);
+        }
+
+        /// <summary>
+        /// Get an <see cref="IPetType"/> by its type name (case insensitive).
+        /// </summary>
+        /// <param name="id">The type name of the pet type.</param>
+        /// <returns></returns>
+        IPetType GetPetTypeByTypeName(string typeName)
+        {
+            return _PetTypeService.GetPetType(typeName);
+        }
+
+        /// <summary>
+        /// Ask and return the desired pet by id.
+        /// </summary>
+        /// <returns></returns>
+        IPetType AskAndReturnPetTypeByTypeName()
+        {
+            var name = AskQuestion("What type should it be?");
+            return GetPetTypeByTypeName(name);
+        }
+
+        #endregion
+
+        #region Menu
+
         /// <summary>
         /// Show the menu.
         /// </summary>
         void ShowMenu()
         {
+            // All the available menu options.
             _MenuOptions = new List<string>()
             {
                 "Add pet",
                 "Delete pet",
                 "Edit pet",
-                "Get pet",
+                "Get pet info",
                 "List pets",
+                "Sort pets by price",
+                "List five cheapest pets",
                 "Exit",
             };
 
@@ -192,12 +261,18 @@ namespace PetShop2021
                 case 1:
                     var name = AskQuestion("Give your new pet a name.");
                     var color = AskQuestion("Give it a color.");
-                    var type = AskQuestion("Give it a type. Anything works, really.");
-                    var price = AskQuestion("Give it a price.");
+                    var type = AskQuestion("Give it a type (cat, dog or goat). More on the way!");
 
-                    var newPet = _PetService.CreatePet(name, type, color, GetNumberFromString(price));
-                    if (_PetService.AddPet(newPet) != null) Tell($"{name} has been added.");
-                    else Tell($"{name} couldn't be added.");
+                    var desiredType = GetPetTypeByTypeName(type);
+                    if (desiredType != null)
+                    {
+                        var price = AskQuestion("Give it a price.");
+
+                        var newPet = _PetService.CreatePet(name, desiredType, Color.FromName(color), GetNumberFromString(price));
+                        if (_PetService.AddPet(newPet) != null) Tell($"{name} has been added.");
+                        else Tell($"{name} couldn't be added.");
+                    }
+                    else Tell("As clearly stated we don´t have that animal type yet! Covid did that to us, so please be patient.");
                     break;
 
                 case 2:
@@ -212,24 +287,31 @@ namespace PetShop2021
 
                     if (desiredPet != null)
                     {
-                        Tell($"So you want to update: {desiredPet.GetName()}? Okay then!");
+                        var oldName = desiredPet.GetName();
+                        Tell($"So you want to update: {oldName}? Okay then!");
 
                         name = AskQuestion("Give your new pet a new name.");
                         color = AskQuestion("Give it a new color.");
-                        type = AskQuestion("Give it a new type.");
-                        price = AskQuestion("Give it a new price.");
+                        type = AskQuestion("Give it a new type (cat, dog or goat). More on the way!");
 
-                        newPet = new Pet()
+                        desiredType = GetPetTypeByTypeName(type);
+                        if (desiredType != null)
                         {
-                            Id = desiredPet.GetId(),
-                            Name = name,
-                            Color = Color.FromName(color),
-                            PetType = new PetType(type),
-                            Price = GetNumberFromString(price),
-                        };
+                            var price = AskQuestion("Give it a new price.");
 
-                        if (_PetService.UpdatePet(newPet) != null) Tell($"{name} has been updated.");
-                        else Tell($"{name} couldn't be updated.");
+                            var newPet = new Pet()
+                            {
+                                Id = desiredPet.GetId(),
+                                Name = name,
+                                Color = Color.FromName(color),
+                                PetType = desiredType,
+                                Price = GetNumberFromString(price),
+                            };
+
+                            if (_PetService.UpdatePet(newPet) != null) Tell($"{oldName} {(!oldName.Equals(name) ? "(now: {name}) " : "")}has been updated.");
+                            else Tell($"{name} couldn't be updated.");
+                        }
+                        else Tell("As clearly stated we don´t have that animal type yet! Covid did that to us, so please be patient.");
                     }
                     else Tell("The desired pet was not found. Maybe it ran away?");
 
@@ -246,9 +328,17 @@ namespace PetShop2021
                     ListPets();
                     break;
 
+                case 6:
+                    ListPetsAndSortByPrice();
+                    break;
+
+                case 7:
+                    ListFiveCheapestPets();
+                    break;
+
             }
 
-            // Only re-show the menu if the user hasn't quit.
+            // Only re-show the menu if the user hasn't chosen to quit.
             if (selection != _MenuOptions.Count)
             {
                 Tell("");
@@ -258,9 +348,10 @@ namespace PetShop2021
 
         public void Start()
         {
-            InitData();
             ShowMenu();
         }
+
+        #endregion
 
         #endregion
 

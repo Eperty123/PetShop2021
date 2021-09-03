@@ -14,6 +14,6 @@ namespace PetShop.Domain.IRepositories
         IPet UpdatePet(IPet pet);
         bool DeletePet(IPet pet);
 
-        IEnumerable<IPet> GetPets();
+        List<Pet> ReadPets();
     }
 }

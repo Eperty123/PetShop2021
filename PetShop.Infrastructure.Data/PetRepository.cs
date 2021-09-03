@@ -8,18 +8,58 @@ namespace PetShop.Infrastructure.Data
     public class PetRepository : IPetRepository
     {
         #region Variables
-        FakeDB FakeDB;
+
+        readonly FakeDB FakeDB;
+
         #endregion
 
         #region Constructors
-        public PetRepository()
+
+        public PetRepository(FakeDB fakeDB)
         {
-            FakeDB = new FakeDB();
+            FakeDB = fakeDB;
+            InitData();
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Add test data.
+        /// </summary>
+        void InitData()
+        {
+
+            #region Pet test data
+
+            var testPets = new List<IPet>()
+            {
+                CreatePet("Haru", "Cat", "Black", 150),
+                CreatePet("Tatsuya", "Dog", "Blue", 200),
+                CreatePet("Eleina", "Goat", "Cyan", 350),
+                CreatePet("Elei", "Goat", "Cyan", 3850),
+                CreatePet("Azusa", "Goat", "Cyan", 3506),
+                CreatePet("Erika", "Goat", "Cyan", 3590),
+            };
+
+            AddPets(testPets);
+
+            #endregion
+        }
+
+        public void AddPets(params IPet[] pets)
+        {
+            for (int i = 0; i < pets.Length; i++)
+                AddPet(pets[i]);
+        }
+
+        public void AddPets(IEnumerable<IPet> pets)
+        {
+            var _pets = new List<IPet>(pets);
+            for (int i = 0; i < _pets.Count; i++)
+                AddPet(_pets[i]);
+        }
 
         public IPet AddPet(IPet pet)
         {
@@ -57,7 +97,7 @@ namespace PetShop.Infrastructure.Data
             return FakeDB.DeletePet(pet);
         }
 
-        public IEnumerable<IPet> GetPets()
+        public List<Pet> ReadPets()
         {
             return FakeDB.GetPets();
         }
