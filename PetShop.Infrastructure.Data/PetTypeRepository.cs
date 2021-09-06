@@ -47,12 +47,20 @@ namespace PetShop.Infrastructure.Data
 
         }
 
+        /// <summary>
+        /// Add an array of pet types to the pet repository.
+        /// </summary>
+        /// <param name="pets">The pet types to add.</param>
         public void AddPetTypes(params IPetType[] pets)
         {
             for (int i = 0; i < pets.Length; i++)
                 AddPetType(pets[i]);
         }
 
+        /// <summary>
+        /// Add an array of pet types to the pet repository.
+        /// </summary>
+        /// <param name="pets">The pet types to add.</param>
         public void AddPetTypes(IEnumerable<IPetType> pets)
         {
             var _pets = new List<IPetType>(pets);

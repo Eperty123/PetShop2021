@@ -48,12 +48,20 @@ namespace PetShop.Infrastructure.Data
             #endregion
         }
 
+        /// <summary>
+        /// Add an array of pets to the pet repository.
+        /// </summary>
+        /// <param name="pets">The pets to add.</param>
         public void AddPets(params IPet[] pets)
         {
             for (int i = 0; i < pets.Length; i++)
                 AddPet(pets[i]);
         }
 
+        /// <summary>
+        /// Add an array of pets to the pet repository.
+        /// </summary>
+        /// <param name="pets">The pets to add.</param>
         public void AddPets(IEnumerable<IPet> pets)
         {
             var _pets = new List<IPet>(pets);

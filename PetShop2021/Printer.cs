@@ -84,7 +84,7 @@ namespace PetShop2021
                 Tell($"Invalid option. Please select a number between 1 - {_menuOptions.Count}.");
             }
 
-            Tell($"You selected: {_menuOptions[selection - 1]}.");
+            //Tell($"You selected: {_menuOptions[selection - 1]}.");
             return selection;
         }
 
@@ -140,7 +140,7 @@ namespace PetShop2021
         /// </summary>
         void ListPets()
         {
-            var pets = _PetService.GetPets().ToList();
+            var pets = _PetService.GetPets().OrderBy(x => x.GetId()).ToList();
             if (pets != null && pets.Count > 0)
             {
                 Tell("");
@@ -261,9 +261,11 @@ namespace PetShop2021
                 case 1:
                     var name = AskQuestion("Give your new pet a name.");
                     var color = AskQuestion("Give it a color.");
-                    var type = AskQuestion("Give it a type (cat, dog or goat). More on the way!");
+                    var type = AskQuestion("Give it a type (cat, dog or goat), or you so desire your very own type.");
 
                     var desiredType = GetPetTypeByTypeName(type);
+                    desiredType = desiredType == null ? _PetTypeService.CreatePetType(type) : desiredType;
+
                     if (desiredType != null)
                     {
                         var price = AskQuestion("Give it a price.");
@@ -272,7 +274,7 @@ namespace PetShop2021
                         if (_PetService.AddPet(newPet) != null) Tell($"{name} has been added.");
                         else Tell($"{name} couldn't be added.");
                     }
-                    else Tell("As clearly stated we don´t have that animal type yet! Covid did that to us, so please be patient.");
+                    else Tell("We couldn´t create that unique pet type. Please try again.");
                     break;
 
                 case 2:
@@ -292,9 +294,11 @@ namespace PetShop2021
 
                         name = AskQuestion("Give your new pet a new name.");
                         color = AskQuestion("Give it a new color.");
-                        type = AskQuestion("Give it a new type (cat, dog or goat). More on the way!");
+                        type = AskQuestion("Give it a new type (cat, dog or goat), or you so desire your very own type.");
 
                         desiredType = GetPetTypeByTypeName(type);
+                        desiredType = desiredType == null ? _PetTypeService.CreatePetType(type) : desiredType;
+
                         if (desiredType != null)
                         {
                             var price = AskQuestion("Give it a new price.");
@@ -308,10 +312,10 @@ namespace PetShop2021
                                 Price = GetNumberFromString(price),
                             };
 
-                            if (_PetService.UpdatePet(newPet) != null) Tell($"{oldName} {(!oldName.Equals(name) ? "(now: {name}) " : "")}has been updated.");
+                            if (_PetService.UpdatePet(newPet) != null) Tell($"{oldName} {(!oldName.Equals(name) ? $"(now: {name}) " : "")}has been updated.");
                             else Tell($"{name} couldn't be updated.");
                         }
-                        else Tell("As clearly stated we don´t have that animal type yet! Covid did that to us, so please be patient.");
+                        else Tell("We couldn´t create that unique pet type. Please try again.");
                     }
                     else Tell("The desired pet was not found. Maybe it ran away?");
 
