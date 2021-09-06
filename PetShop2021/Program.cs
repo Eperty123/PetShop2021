@@ -22,8 +22,6 @@ namespace PetShop2021
             var printer = serviceProvider.GetRequiredService<IPrinter>();
 
             printer.Start();
-
-            // TODO: Implement PetTypeService.
         }
     }
 }
