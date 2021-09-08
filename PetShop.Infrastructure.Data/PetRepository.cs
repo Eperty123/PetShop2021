@@ -9,7 +9,7 @@ namespace PetShop.Infrastructure.Data
     {
         #region Variables
 
-        readonly FakeDB FakeDB;
+        static FakeDB FakeDB;
 
         #endregion
 
@@ -18,7 +18,7 @@ namespace PetShop.Infrastructure.Data
         public PetRepository(FakeDB fakeDB)
         {
             FakeDB = fakeDB;
-            InitData();
+            //InitData();
         }
 
         #endregion
