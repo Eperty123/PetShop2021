@@ -308,7 +308,7 @@ namespace PetShop2021
                                 Id = desiredPet.GetId(),
                                 Name = name,
                                 Color = Color.FromName(color),
-                                PetType = desiredType,
+                                PetType = (PetType)desiredType,
                                 Price = GetNumberFromString(price),
                             };
 

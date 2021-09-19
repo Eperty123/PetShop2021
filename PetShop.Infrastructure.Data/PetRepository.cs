@@ -2,6 +2,7 @@
 using PetShop.Domain.IRepositories;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace PetShop.Infrastructure.Data
 {
@@ -9,16 +10,15 @@ namespace PetShop.Infrastructure.Data
     {
         #region Variables
 
-        static FakeDB FakeDB;
+        readonly PetShopDbContext _PetShopDbContext;
 
         #endregion
 
         #region Constructors
 
-        public PetRepository(FakeDB fakeDB)
+        public PetRepository(PetShopDbContext petShopDbContext)
         {
-            FakeDB = fakeDB;
-            //InitData();
+            _PetShopDbContext = petShopDbContext;
         }
 
         #endregion
@@ -71,7 +71,9 @@ namespace PetShop.Infrastructure.Data
 
         public IPet AddPet(IPet pet)
         {
-            return FakeDB.AddPet(pet);
+            var addedPet = _PetShopDbContext.Pets.Add((Pet)pet).Entity;
+            _PetShopDbContext.SaveChanges();
+            return addedPet;
         }
 
         public IPet CreatePet(int id, string name, string type, string color, double price)
@@ -102,27 +104,31 @@ namespace PetShop.Infrastructure.Data
 
         public bool DeletePet(IPet pet)
         {
-            return FakeDB.DeletePet(pet);
+            var deletedPet = _PetShopDbContext.Pets.Remove((Pet)pet).Entity;
+            _PetShopDbContext.SaveChanges();
+            return deletedPet != null;
         }
 
         public List<Pet> ReadPets()
         {
-            return FakeDB.GetPets();
+            return _PetShopDbContext.Pets.ToList();
         }
 
         public IPet GetPet(int id)
         {
-            return FakeDB.GetPet(id);
+            return ReadPets().FirstOrDefault(x => x.GetId().Equals(id));
         }
 
         public IPet GetPet(IPet pet)
         {
-            return FakeDB.GetPet(pet);
+            return GetPet(pet.GetId());
         }
 
         public IPet UpdatePet(IPet pet)
         {
-            return FakeDB.UpdatePet(pet);
+            var updatedPet = _PetShopDbContext.Pets.Update((Pet)pet).Entity;
+            _PetShopDbContext.SaveChanges();
+            return updatedPet;
         }
 
         #endregion

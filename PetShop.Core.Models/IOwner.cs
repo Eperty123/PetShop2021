@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PetShop.Core.Models
+﻿namespace PetShop.Core.Models
 {
     public interface IOwner
     {
@@ -12,5 +8,12 @@ namespace PetShop.Core.Models
         string GetAddress();
         int GetPhoneNumber();
         string GetEmail();
+
+        void SetId(int id);
+        void SetFirstName(string firstName);
+        void SetLastName(string lastName);
+        void SetAddress(string address);
+        void SetPhoneNumber(int phoneNumber);
+        void SetEmail(string email);
     }
 }

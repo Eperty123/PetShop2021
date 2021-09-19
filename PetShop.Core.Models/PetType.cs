@@ -10,6 +10,10 @@
 
         #region Constructors
 
+        public PetType()
+        {
+        }
+
         public PetType(int id, string type)
         {
             SetId(id);

@@ -8,7 +8,7 @@ namespace PetShop.Core.Models
         #region Variables
         public int Id { get; set; }
         public string Name { get; set; }
-        public IPetType PetType { get; set; }
+        public PetType PetType { get; set; }
         public DateTime BirthDay { get; set; }
         public DateTime SellDate { get; set; }
         public Color Color { get; set; }
@@ -23,7 +23,7 @@ namespace PetShop.Core.Models
         {
             Id = id;
             Name = name;
-            PetType = petType;
+            PetType = (PetType)petType;
             BirthDay = birthDay;
             SellDate = sellDate;
             Color = color;
@@ -55,9 +55,9 @@ namespace PetShop.Core.Models
             return Name;
         }
 
-        public IPetType GetPetType()
+        public PetType GetPetType()
         {
-            return PetType;
+            return (PetType)PetType;
         }
 
         public double GetPrice()
@@ -97,7 +97,7 @@ namespace PetShop.Core.Models
 
         public void SetPetType(IPetType petType)
         {
-            PetType = petType;
+            PetType = (PetType)petType;
         }
 
         public void SetPrice(double price)

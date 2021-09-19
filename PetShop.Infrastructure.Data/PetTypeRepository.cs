@@ -10,19 +10,18 @@ namespace PetShop.Infrastructure.Data
     {
         #region Variables
 
-        readonly FakeDB FakeDB;
+        readonly PetShopDbContext _PetShopDbContext;
 
         #endregion
 
         #region Constructors
-        public PetTypeRepository(FakeDB fakeDB)
+        public PetTypeRepository(PetShopDbContext petShopDbContext)
         {
-            FakeDB = fakeDB;
+            _PetShopDbContext = petShopDbContext;
             InitData();
         }
 
         #endregion
-
 
         #region Methods
 
@@ -70,8 +69,9 @@ namespace PetShop.Infrastructure.Data
 
         public IPetType AddPetType(IPetType petType)
         {
-            FakeDB.AddPetType(petType);
-            return petType;
+            var addedPetType = _PetShopDbContext.PetTypes.Add((PetType)petType).Entity;
+            _PetShopDbContext.SaveChanges();
+            return addedPetType;
         }
 
         public IPetType CreatePetType(string type)
@@ -81,27 +81,31 @@ namespace PetShop.Infrastructure.Data
 
         public bool DeletePetType(IPetType petType)
         {
-            return FakeDB.DeletePetType(petType);
+            var deletedPetType = _PetShopDbContext.PetTypes.Remove((PetType)petType).Entity;
+            _PetShopDbContext.SaveChanges();
+            return deletedPetType != null;
         }
 
         public List<PetType> ReadPetTypes()
         {
-            return FakeDB.GetPetTypes().OfType<PetType>().ToList();
+            return _PetShopDbContext.PetTypes.ToList();
         }
 
         public IPetType GetPetType(int id)
         {
-            return FakeDB.GetPetType(id);
+            return ReadPetTypes().FirstOrDefault(x => x.GetId().Equals(id));
         }
 
         public IPetType GetPetType(IPetType petType)
         {
-            throw new NotImplementedException();
+            return GetPetType(petType.GetId());
         }
 
         public IPetType UpdatePetType(IPetType petType)
         {
-            throw new NotImplementedException();
+            var updatedPetType = _PetShopDbContext.PetTypes.Update((PetType)petType).Entity;
+            _PetShopDbContext.SaveChanges();
+            return updatedPetType;
         }
 
 

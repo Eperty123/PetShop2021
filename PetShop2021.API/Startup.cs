@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,19 +32,19 @@ namespace PetShop2021.API
         {
             services.AddScoped<IPetRepository, PetRepository>();
             services.AddScoped<IPetService, PetService>();
-            services.AddScoped<FakeDB, FakeDB>();
+
+            services.AddScoped<IPetTypeRepository, PetTypeRepository>();
+            services.AddScoped<IPetTypeService, PetTypeService>();
+
+            services.AddScoped<IOwnerRepository, OwnerRepository>();
+            services.AddScoped<IOwnerService, OwnerService>();
+
+            services.AddDbContext<PetShopDbContext>(options =>
+            {
+                options.UseInMemoryDatabase("PetshopDb");
+            });
             services.AddControllers();
             services.AddSwaggerGen();
-
-            //services.AddSwaggerGen(x =>
-            //{
-            //    x.SwaggerDoc("v1",
-            //        new Microsoft.OpenApi.Models.OpenApiInfo()
-            //        {
-            //            Title = "PetShop2021.RestAPI",
-            //            Version = "v1",
-            //        });
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

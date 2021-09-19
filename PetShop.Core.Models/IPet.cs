@@ -8,7 +8,7 @@ namespace PetShop.Core.Models
         #region Getters
         int GetId();
         string GetName();
-        IPetType GetPetType();
+        PetType GetPetType();
         DateTime GetBirthDay();
         DateTime GetSellDate();
         Color GetColor();

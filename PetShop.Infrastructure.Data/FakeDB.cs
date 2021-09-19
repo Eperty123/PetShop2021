@@ -39,7 +39,7 @@ namespace PetShop.Infrastructure.Data
         /// <returns>Returns the desired pet.</returns>
         public IPet GetPet(int id)
         {
-            return GetPets().Find(x => x.GetId().Equals(id));
+            return Pets.Find(x=>x.GetId() == id);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace PetShop.Infrastructure.Data
         /// <returns>Returns the desired pet.</returns>
         public IPet GetPet(IPet pet)
         {
-            return GetPets().Find(x => x.GetId().Equals(pet.GetId()));
+            return GetPet(pet.GetId());
         }
 
         /// <summary>
