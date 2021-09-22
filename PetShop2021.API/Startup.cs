@@ -11,6 +11,7 @@ using PetShop.Core.IServices;
 using PetShop.Domain.IRepositories;
 using PetShop.Domain.Services;
 using PetShop.Infrastructure.Data;
+using PetShop2021.EFCore.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,11 @@ namespace PetShop2021.API
 
             services.AddScoped<IOwnerRepository, OwnerRepository>();
             services.AddScoped<IOwnerService, OwnerService>();
+
+            // Entity.
+            services.AddScoped<IPetRepository, PetEntityRepository>();
+            services.AddScoped<IPetTypeRepository, PetTypeEntityRepository>();
+            services.AddScoped<IOwnerRepository, OwnerEntityRepository>();
 
             services.AddDbContext<PetShopDbContext>(options =>
             {
