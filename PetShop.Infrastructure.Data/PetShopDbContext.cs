@@ -10,5 +10,10 @@ namespace PetShop.Infrastructure.Data
         public DbSet<Owner> Owners { get; set; }
 
         public PetShopDbContext(DbContextOptions<PetShopDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Register entities.
+        }
     }
 }
