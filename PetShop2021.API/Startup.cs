@@ -45,10 +45,18 @@ namespace PetShop2021.API
             services.AddScoped<IPetTypeRepository, PetTypeEntityRepository>();
             services.AddScoped<IOwnerRepository, OwnerEntityRepository>();
 
+            // In memory database.
+            //services.AddDbContext<PetShopDbContext>(options =>
+            //{
+            //    options.UseInMemoryDatabase("PetshopDb");
+            //});
+
+            // Sqlite database.
             services.AddDbContext<PetShopDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("PetshopDb");
-            });
+           {
+               options.UseSqlServer("Data Source=PetshopDb.db");
+           });
+
             services.AddControllers();
             services.AddSwaggerGen();
         }
@@ -64,6 +72,25 @@ namespace PetShop2021.API
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "PetShop.RestApi");
                 });
+
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetService<PetShopDbContext>();
+                    context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
+
+                    // Todo: Use Entity class instead of the original class for the DbSet in the PetshopDbContext.
+                    // Add dummy data (seed).
+                    //var dumdum = context.Pets.Add(new PetShop.Core.Models.Pet()
+                    //{
+                    //    Id = 1,
+                    //    Name = "Aeria",
+                    //    PetType = new PetShop.Core.Models.PetType("Cat"),
+                    //    BirthDay = DateTime.Now,
+                    //    Color = System.Drawing.Color.Red,
+                    //    Price = 5
+                    //}).Entity;
+                }
             }
 
             app.UseDefaultFiles();
